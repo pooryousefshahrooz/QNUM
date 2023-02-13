@@ -14,7 +14,6 @@ import math as mt
 import csv
 import os
 import random
-from solver import Solver
 import pdb
 from os import listdir
 from os.path import isfile, join
@@ -82,33 +81,54 @@ class Network:
 
         
     def generate_workloads(self):
+        """we assume there is only one workload and
+        that work load has two flows (flow with id 0 and flow with id 1) and each flow has a path with one edge"""
         for i in range(1):
-            self.each_wk_flow_ids[i]=[0,1,2,3,4]
+            self.each_wk_flow_ids[i]=[0,1]
         self.each_wk_flow_id_paths[0] = {}
         self.each_wk_flow_id_paths[0][0] = [0]
-        self.each_wk_flow_id_paths[0][1] = [1]
-        self.each_wk_flow_id_paths[0][2] = [2]
-        self.each_wk_flow_id_paths[0][3] = [3]
-        self.each_wk_flow_id_paths[0][4] = [4]
-        self.set_E = {0:(0,5),1:(1,5),2:(2,5),3:(3,5),4:(4,5),5:(5,6),6:(6,7),7:(6,8),
-                      8:(6,9),9:(6,10),10:(6,11)}
-        self.each_edge_id = {(0,5):0,(1,5):1,(2,5):2,(3,5):3,(4,5):4,
-                             (5,6):5,
-                             (6,7):6,(6,8):7,(6,9):8,(6,10):9,(6,11):10
+        self.each_wk_flow_id_paths[0][1] = [0]
+        self.set_E = {0:(0,1)}
+        self.each_edge_id = {(0,1):0
                             }
-        self.each_id_edge = {0:(0,5),1:(1,5),2:(2,5),3:(3,5),4:(4,5),5:(5,6),
-                            6:(6,7),7:(6,8),8:(6,9),9:(6,10),10:(6,11)}
+        self.each_id_edge = {0:(0,1)}
         
-        self.set_of_paths = {0:[0,5,6],1:[1,5,7],2:[2,5,8],3:[3,5,9],4:[4,5,10]
+        self.set_of_paths = {0:[(0,1)]
                             }
         
-        self.each_edge_distance = {0:15,1:15,2:15,3:15,4:15,5:15,
-                            6:15,7:15,8:15,9:15,10:15}
+        self.each_edge_distance = {0:10}
+        
+        
+        
+        
+        
+#         for i in range(1):
+#             self.each_wk_flow_ids[i]=[0,1,2,3,4]
+#         self.each_wk_flow_id_paths[0] = {}
+#         self.each_wk_flow_id_paths[0][0] = [0]
+#         self.each_wk_flow_id_paths[0][1] = [1]
+#         self.each_wk_flow_id_paths[0][2] = [2]
+#         self.each_wk_flow_id_paths[0][3] = [3]
+#         self.each_wk_flow_id_paths[0][4] = [4]
+#         self.set_E = {0:(0,5),1:(1,5),2:(2,5),3:(3,5),4:(4,5),5:(5,6),6:(6,7),7:(6,8),
+#                       8:(6,9),9:(6,10),10:(6,11)}
+#         self.each_edge_id = {(0,5):0,(1,5):1,(2,5):2,(3,5):3,(4,5):4,
+#                              (5,6):5,
+#                              (6,7):6,(6,8):7,(6,9):8,(6,10):9,(6,11):10
+#                             }
+#         self.each_id_edge = {0:(0,5),1:(1,5),2:(2,5),3:(3,5),4:(4,5),5:(5,6),
+#                             6:(6,7),7:(6,8),8:(6,9),9:(6,10),10:(6,11)}
+        
+#         self.set_of_paths = {0:[0,5,6],1:[1,5,7],2:[2,5,8],3:[3,5,9],4:[4,5,10]
+#                             }
+        
+#         self.each_edge_distance = {0:15,1:15,2:15,3:15,4:15,5:15,
+#                             6:15,7:15,8:15,9:15,10:15}
         
     def set_d_value_of_edges(self, backbone_link_lenght):
         c = 1
         for edge_id,edge in self.set_E.items():
-            if edge ==(5,6):
+            if edge ==(0,1):
                 edge_length = backbone_link_lenght
             else:
                 edge_length = self.each_edge_distance[edge_id]
@@ -136,9 +156,10 @@ class Network:
     def get_edges(self):
         return self.set_E
 
-    def check_path_include_edge(self,edge,path):
-        print("checking edge %s in path %s"%(edge,path))
-        if self.set_E[edge] in self.set_of_paths[path] or (self.set_E[edge][1],self.set_E[edge][0]) in self.set_of_paths[path]:
+    def check_path_include_edge(self,edge_id,path_id):
+        print("checking edge %s in path %s"%(self.set_E[edge_id],self.set_of_paths[path_id]))
+        if edge_id in self.set_of_paths[path_id]: 
+        #or (self.each_edge_id[(self.set_E[edge_id][1],self.set_E[edge_id][0])] in self.set_of_paths[path_id]):
             return True
         else:
             return False
